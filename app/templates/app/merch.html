@@ -1,0 +1,769 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Existing head content -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bhad Yaya | Merch</title>
+    <style>
+        /* Import the Spaceman font */
+        @font-face {
+            font-family: 'Spaceman';
+            src: url('{% static "fonts/spaceman/SPACEMAN.TTF" %}') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        body {
+            background-color: black;
+            font-family: 'Spaceman', sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Exclude forms from using the Spaceman font */
+        input, select, textarea, button {
+            font-family: 'Arial', sans-serif;
+        }
+
+        h1 {
+            font-size: 3em;
+            color: black;
+            text-align: center;
+            margin-top: 2%;
+            margin-bottom: 20px;
+            text-shadow: 
+                0 0 10px #FF1493,  
+                0 0 20px #FF1493, 
+                0 0 30px #FF1493, 
+                0 0 40px #FF1493, 
+                0 0 50px #FF1493, 
+                0 0 60px #FF1493, 
+                0 0 70px #FF1493;
+        }
+
+        .content-wrapper {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            padding-top: 10px;
+            padding-bottom: 100px; /* Increased padding to prevent overlap */
+        }
+
+        /* Merch display area */
+        .merch-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 5px;
+        }
+
+        /* Slider wrapper */
+        .slider-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 500px; /* Adjusted to accommodate larger images */
+            margin: auto;
+        }
+
+        /* Slideshow container */
+        .slideshow-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px; /* Adjusted to accommodate larger images */
+            margin: auto;
+        }
+
+        .merch-item img {
+            width: 100%;
+            max-height: 420px; /* Adjusted max height */
+            object-fit: contain;
+            border: 5px solid #FF1493;
+            box-shadow: 0 0 10px #FF1493, 0 0 20px #FF1493;
+            border-radius: 10px;
+        }
+
+        .merch-item h2 {
+            font-size: 1.5em;
+            color: white;
+            margin-top: 10px;
+        }
+
+        .merch-item button {
+            padding: 6px 12px; /* Reduced padding */
+            background-color: #FF1493;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em; /* Reduced font size */
+            margin-top: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        .merch-item button:hover {
+            background-color: white;
+            color: #FF1493;
+        }
+
+        /* Toggle Image Button */
+        .toggle-image-button {
+            padding: 6px 12px;
+            background-color: #FF1493;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            margin-top: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        .toggle-image-button:hover {
+            background-color: white;
+            color: #FF1493;
+        }
+
+        /* Cart Icon */
+        .cart-icon {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: black;
+            color: #FF1493;
+            border: 3px solid #FF1493;
+            border-radius: 50%;
+            padding: 10px;
+            font-size: 1.5em;
+            cursor: pointer;
+            box-shadow: 0 0 15px #FF1493, 0 0 25px #FF1493;
+            transition: all 0.3s ease;
+            z-index: 1001; /* Ensure it's above other elements */
+        }
+
+        .cart-icon:hover {
+            background-color: #FF1493;
+            color: white;
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: #FF1493;
+            color: white;
+            font-size: 0.8em;
+            padding: 3px 6px;
+            border-radius: 50%;
+        }
+
+        /* Order Form */
+        .order-form {
+            display: none; /* Hidden initially */
+            flex-direction: column;
+            background-color: black;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px #FF1493, 0 0 20px #FF1493;
+            text-align: center;
+            width: 400px;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000; /* Make sure it's above other content */
+        }
+
+        .order-form input, .order-form select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 2px solid #FF1493;
+            background-color: black;
+            color: white;
+        }
+
+        .order-form button {
+            padding: 10px 20px;
+            background-color: #FF1493;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.2em;
+            transition: background-color 0.3s ease;
+            margin: 5px; /* Added margin for spacing between buttons */
+        }
+
+        .order-form button:hover {
+            background-color: white;
+            color: #FF1493;
+        }
+
+        /* Cart Popup */
+        .cart-popup {
+            display: none;
+            position: fixed;
+            top: 100px;
+            right: 50px;
+            background-color: black;
+            color: white;
+            border: 3px solid #FF1493;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 15px #FF1493, 0 0 25px #FF1493;
+            z-index: 1000;
+        }
+
+        .cart-popup h3 {
+            color: #FF1493;
+            margin-bottom: 10px;
+        }
+
+        .cart-popup ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .cart-popup ul li {
+            margin-bottom: 10px;
+        }
+
+        .cart-popup button {
+            padding: 10px 20px;
+            background-color: #FF1493;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.2em;
+        }
+
+        .cart-popup button:hover {
+            background-color: white;
+            color: #FF1493;
+        }
+
+        /* Removed Bottom Navigation Bar Styles Entirely */
+        /* .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: black;
+            display: flex;
+            justify-content: space-around;
+            padding: 20px;
+            border-top: 1px solid #fff;
+            z-index: 9999;
+        }
+
+        .bottom-nav a {
+            text-decoration: none;
+            color: #FF1493;
+            font-size: 1.5em;
+            font-weight: bold;
+            text-align: center;
+            text-shadow: 0 0 5px #FF1493, 0 0 10px #FF1493;
+            transition: color 0.3s ease;
+        }
+
+        .bottom-nav a:hover {
+            color: black;
+            text-shadow: 0 0 5px #FF1493, 0 0 10px #FF1493;
+        } */
+
+        /* Slideshow container */
+        .merch-item {
+            display: none;
+            text-align: center;
+        }
+
+        /* Navigation buttons */
+        .slider-nav {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transform: translateY(-50%);
+            z-index: 10; /* Ensure buttons are above other elements */
+            pointer-events: none; /* Allow clicks to pass through to buttons */
+        }
+
+        .slider-nav button {
+            background: none;
+            border: none;
+            color: #FF1493;
+            font-size: 40px;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 50%;
+            transition: transform 0.2s ease, color 0.2s ease;
+            pointer-events: all; /* Enable clicks on buttons */
+        }
+
+        .slider-nav button:hover {
+            transform: scale(1.2);
+            color: #ffffff;
+            text-shadow: 0 0 10px #FF1493, 0 0 20px #FF1493;
+        }
+
+        /* Adjust the position of the arrows */
+        .slider-nav button#prevBtn {
+            position: relative;
+            left: -50px; /* Adjusted to bring arrows within mobile screen */
+        }
+
+        .slider-nav button#nextBtn {
+            position: relative;
+            right: -50px; /* Adjusted to bring arrows within mobile screen */
+        }
+
+        /* Home Icon Styles */
+        .home-icon {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+        }
+
+        .home-icon img {
+            width: 100px; /* Adjust size as needed */
+            height: auto;
+        }
+
+        @media (max-width: 400px) {
+            .slideshow-container {
+                max-width: 95%;
+            }
+        
+            .slider-nav button {
+                font-size: 24px;
+            }
+        
+            .slider-nav button#prevBtn {
+                left: -20px;
+            }
+        
+            .slider-nav button#nextBtn {
+                right: -20px;
+            }
+        }
+
+            /* Move Cart Icon inside Slideshow */
+            .cart-icon {
+                position: absolute; /* Change from fixed to absolute */
+                top: 10px;
+                right: 10px;
+                width: 40px; /* Increase size */
+                height: 40px; /* Increase size */
+                font-size: 2em; /* Increase font size */
+            }
+
+            /* Ensure Cart Count remains properly positioned */
+            .cart-count {
+                top: -5px;
+                right: -5px;
+                font-size: 0.8em;
+                padding: 3px 6px;
+            }
+
+            /* Adjust the size of the slideshow */
+            .slideshow-container {
+                max-width: 90%;
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 400px) {
+            /* Further adjustments for very small screens */
+
+            /* Adjust Slideshow Size */
+            .slideshow-container {
+                max-width: 95%;
+            }
+
+            /* Ensure both arrows are visible */
+            .slider-nav button#prevBtn {
+                left: -25px;
+            }
+
+            .slider-nav button#nextBtn {
+                right: -25px;
+            }
+
+            /* Move Cart Icon inside Slideshow */
+            .cart-icon {
+                width: 35px; /* Slightly reduce size */
+                height: 35px;
+                font-size: 1.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Home Icon -->
+    <a href="{% url 'home' %}" class="home-icon">
+        <img src="{% static 'images/home.gif' %}" alt="Home">
+    </a>
+
+    <!-- Cart Icon with item count -->
+    <div class="cart-icon" id="cart-icon">
+        🛒 <span class="cart-count" id="cart-count">0</span>
+    </div>
+
+    <!-- Cart Popup -->
+    <div class="cart-popup" id="cart-popup">
+        <h3>Your Cart</h3>
+        <ul id="cart-items"></ul>
+        <button id="close-cart">Close</button>
+    </div>
+
+    <div class="content-wrapper">
+        <div class="merch-container">
+            <!-- Slider wrapper -->
+            <div class="slider-wrapper">
+                <!-- Slideshow container -->
+                <div class="slideshow-container">
+                    <!-- T-shirt 1 -->
+                    <div class="merch-item mySlides">
+                        <div class="image-container">
+                            <img src="{% static 'merch/tshirt1-black-flat.webp' %}" alt="T-shirt (Black Flat)" class="flat-image">
+                            <img src="{% static 'merch/tshirt1-black-spin.gif' %}" alt="T-shirt (Black Spin)" class="spin-image" style="display: none;">
+                        </div>
+                        <h2>Bhad Yaya T-shirt (Black)</h2>
+                        <button class="toggle-image-button">View Spin</button>
+                        <button class="choose-options-button">Select Size</button>
+                    </div>
+                    <!-- T-shirt 2 -->
+                    <div class="merch-item mySlides">
+                        <div class="image-container">
+                            <img src="{% static 'merch/tshirt2-black-flat.webp' %}" alt="T-shirt (Black Alt Flat)" class="flat-image">
+                            <img src="{% static 'merch/tshirt2-black-spin.gif' %}" alt="T-shirt (Black Alt Spin)" class="spin-image" style="display: none;">
+                        </div>
+                        <h2>Alt Bhad Yaya T-shirt B</h2>
+                        <button class="toggle-image-button">View Spin</button>
+                        <button class="choose-options-button">Select Size</button>
+                    </div>
+                    <!-- T-shirt 3 -->
+                    <div class="merch-item mySlides">
+                        <div class="image-container">
+                            <img src="{% static 'merch/tshirt2-white-flat.webp' %}" alt="T-shirt (White Flat)" class="flat-image">
+                            <img src="{% static 'merch/tshirt2-white-spin.gif' %}" alt="T-shirt (White Spin)" class="spin-image" style="display: none;">
+                        </div>
+                        <h2>ALT Bhad Yaya T-shirt W</h2>
+                        <button class="toggle-image-button">View Spin</button>
+                        <button class="choose-options-button">Select Size</button>
+                    </div>
+                </div>
+
+                <!-- Slider Navigation Buttons -->
+                <div class="slider-nav">
+                    <button id="prevBtn">&#10094;</button>
+                    <button id="nextBtn">&#10095;</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Form -->
+    <div class="order-form" id="order-form">
+        <h2>Purchase T-shirt</h2>
+        <form id="order-form-element">
+            <label for="size">Select Size:</label>
+            <select id="size" name="size" required>
+                <option value="">--Select--</option>
+                <option value="S">Small</option>
+                <option value="M">Medium</option>
+                <option value="L">Large</option>
+                <option value="XL">Extra Large</option>
+            </select>
+
+            <label for="quantity">Quantity:</label>
+            <input type="number" id="quantity" name="quantity" min="1" max="10" required>
+
+            <button type="submit">Add to Cart</button>
+            <!-- Added Close Button -->
+            <button type="button" id="close-order-form">Close</button>
+        </form>
+    </div>
+
+    <!-- Removed Bottom Navigation Bar Entirely -->
+
+    <!-- JavaScript functionality -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Slideshow functionality
+            let slideIndex = 0;
+            const slides = document.getElementsByClassName("mySlides");
+            showSlides(slideIndex);
+
+            // Next/previous controls
+            function changeSlide(n) {
+                slideIndex = (slideIndex + n + slides.length) % slides.length;
+                showSlides(slideIndex);
+            }
+
+            // Show the current slide
+            function showSlides(n) {
+                for (let i = 0; i < slides.length; i++) {
+                    slides[i].style.display = "none";
+                }
+                slides[n].style.display = "block";
+            }
+
+            // Event listeners for slideshow navigation
+            document.getElementById('prevBtn').addEventListener('click', function() {
+                changeSlide(-1);
+            });
+            document.getElementById('nextBtn').addEventListener('click', function() {
+                changeSlide(1);
+            });
+
+            const chooseOptionsButtons = document.querySelectorAll('.choose-options-button');
+            const orderForm = document.getElementById('order-form');
+            const cartIcon = document.getElementById('cart-icon');
+            const cartCount = document.getElementById('cart-count');
+            const cartPopup = document.getElementById('cart-popup');
+            const cartItemsList = document.getElementById('cart-items');
+            const closeCartButton = document.getElementById('close-cart');
+            const closeOrderFormButton = document.getElementById('close-order-form'); // Added close button for order form
+            let cart = [];
+
+            // Toggle the order form visibility when any "Select Size" button is clicked
+            chooseOptionsButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    orderForm.style.display = 'flex';
+                });
+            });
+
+            // Close the order form when the close button is clicked
+            closeOrderFormButton.addEventListener('click', () => {
+                orderForm.style.display = 'none';
+                // Reset form fields if necessary
+                document.getElementById('size').value = '';
+                document.getElementById('quantity').value = '';
+            });
+
+            // Handle form submission and add item to cart
+            document.getElementById('order-form-element').addEventListener('submit', function(event) {
+                event.preventDefault();
+                const size = document.getElementById('size').value;
+                const quantity = parseInt(document.getElementById('quantity').value);
+
+                if (size && quantity > 0) {
+                    // Add item to cart
+                    const item = {
+                        name: 'Official Bhad Yaya T-shirt',
+                        size: size,
+                        quantity: quantity
+                    };
+                    cart.push(item);
+
+                    // Update total cart quantity
+                    const totalQuantity = cart.reduce((acc, item) => acc + item.quantity, 0);
+                    cartCount.textContent = totalQuantity;
+
+                    // Hide the form and reset fields
+                    orderForm.style.display = 'none';
+                    document.getElementById('size').value = '';
+                    document.getElementById('quantity').value = '';
+                } else {
+                    alert('Please select a size and valid quantity.');
+                }
+            });
+
+            // Toggle cart popup when cart icon is clicked
+            cartIcon.addEventListener('click', () => {
+                if (cartPopup.style.display === 'block') {
+                    cartPopup.style.display = 'none';
+                } else {
+                    cartPopup.style.display = 'block';
+                    cartItemsList.innerHTML = '';
+
+                    // Display items in cart
+                    cart.forEach(item => {
+                        const listItem = document.createElement('li');
+                        listItem.textContent = `${item.name} - Size: ${item.size}, Quantity: ${item.quantity}`;
+                        cartItemsList.appendChild(listItem);
+                    });
+
+                    // Update the button to "Checkout"
+                    closeCartButton.textContent = 'Checkout';
+                }
+            });
+
+            // Checkout button click event - show checkout form
+            closeCartButton.addEventListener('click', () => {
+                if (closeCartButton.textContent === 'Checkout') {
+                    cartPopup.style.display = 'none'; // Close cart popup
+
+                    // Display checkout form when "Checkout" is clicked
+                    const checkoutForm = document.createElement('div');
+                    checkoutForm.innerHTML = `
+                        <h2>Checkout</h2>
+                        <form id="checkout-form">
+                            <label for="name">Name*</label>
+                            <input type="text" id="name" name="name" required>
+                            <label for="address">Address*</label>
+                            <input type="text" id="address" name="address" required>
+                            <label for="address2">Address Line 2 (Optional)</label>
+                            <input type="text" id="address2" name="address2">
+                            <label for="email">Email*</label>
+                            <input type="email" id="email" name="email" required>
+                            <!-- Payment processing should be handled securely via a payment gateway -->
+                            <p>Please proceed to payment on the next page.</p>
+                            <button type="submit">Submit</button>
+                            <button type="button" id="close-checkout">Close</button>
+                        </form>
+                    `;
+
+                    // Create and style an overlay to fade the background
+                    const overlay = document.createElement('div');
+                    overlay.style.position = 'fixed';
+                    overlay.style.top = '0';
+                    overlay.style.left = '0';
+                    overlay.style.width = '100vw';
+                    overlay.style.height = '100vh';
+                    overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
+                    overlay.style.zIndex = '999';
+                    document.body.appendChild(overlay);
+
+                    // Style and position the checkout form as a centered modal
+                    checkoutForm.style.position = 'fixed';
+                    checkoutForm.style.top = '50%';
+                    checkoutForm.style.left = '50%';
+                    checkoutForm.style.transform = 'translate(-50%, -50%)';
+                    checkoutForm.style.width = '350px';
+                    checkoutForm.style.backgroundColor = 'black';
+                    checkoutForm.style.padding = '15px';
+                    checkoutForm.style.border = '3px solid #FF1493';
+                    checkoutForm.style.borderRadius = '10px';
+                    checkoutForm.style.boxShadow = '0 0 15px #FF1493, 0 0 25px #FF1493';
+                    checkoutForm.style.zIndex = '1000';
+                    checkoutForm.style.display = 'flex';
+                    checkoutForm.style.flexDirection = 'column';
+                    checkoutForm.style.justifyContent = 'center';
+                    checkoutForm.style.alignItems = 'center';
+                    document.body.appendChild(checkoutForm);
+
+                    // Style for the inner content (the form itself)
+                    const formElement = checkoutForm.querySelector('form');
+                    formElement.style.width = '100%';
+                    formElement.style.padding = '0';
+                    formElement.style.backgroundColor = 'transparent';
+                    formElement.style.border = 'none';
+                    formElement.style.gap = '8px';
+                    formElement.style.alignItems = 'flex-start';
+                    formElement.style.justifyContent = 'flex-start';
+
+                    // Styling input fields
+                    const inputFields = formElement.querySelectorAll('input');
+                    inputFields.forEach(input => {
+                        input.style.width = '100%';
+                        input.style.padding = '6px';
+                        input.style.borderRadius = '5px';
+                        input.style.border = '2px solid #FF1493';
+                        input.style.backgroundColor = 'black';
+                        input.style.color = 'white';
+                        input.style.fontSize = '1em';
+                    });
+
+                    // Styling the buttons (Submit and Close)
+                    const buttons = formElement.querySelectorAll('button');
+                    buttons.forEach(button => {
+                        button.style.padding = '8px 15px';
+                        button.style.width = '48%';
+                        button.style.margin = '0 auto';
+                        button.style.backgroundColor = '#FF1493';
+                        button.style.color = 'white';
+                        button.style.border = 'none';
+                        button.style.borderRadius = '5px';
+                        button.style.cursor = 'pointer';
+                        button.style.fontSize = '1em';
+                        button.style.marginTop = '10px';
+                        button.style.transition = 'background-color 0.3s ease';
+                        button.style.margin = '5px'; /* Added margin for spacing between buttons */
+                    });
+
+                    // Add hover effect for buttons
+                    buttons.forEach(button => {
+                        button.addEventListener('mouseover', () => {
+                            button.style.backgroundColor = 'white';
+                            button.style.color = '#FF1493';
+                        });
+                        button.addEventListener('mouseout', () => {
+                            button.style.backgroundColor = '#FF1493';
+                            button.style.color = 'white';
+                        });
+                    });
+
+                    // Add styles for labels
+                    const labels = formElement.querySelectorAll('label');
+                    labels.forEach(label => {
+                        label.style.fontSize = '1em';
+                        label.style.marginBottom = '5px';
+                        label.style.color = '#FF1493';
+                    });
+
+                    // Add functionality to close the form and remove the overlay
+                    const closeButton = document.getElementById('close-checkout');
+                    closeButton.addEventListener('click', () => {
+                        checkoutForm.remove();
+                        overlay.remove();
+                    });
+
+                    // Handle checkout form submission
+                    document.getElementById('checkout-form').addEventListener('submit', function(event) {
+                        event.preventDefault();
+                        // Process checkout details here (e.g., integrate with a payment gateway)
+                        alert('Checkout completed! Thank you for your purchase.');
+                        // Clear the form and cart after checkout
+                        checkoutForm.remove();
+                        overlay.remove();
+                        cart = [];
+                        cartCount.textContent = '0';
+                    });
+                } else {
+                    // Close the cart popup
+                    cartPopup.style.display = 'none';
+                }
+            });
+
+            // Toggle between flat image and spin image
+            const toggleImageButtons = document.querySelectorAll('.toggle-image-button');
+
+            toggleImageButtons.forEach((button) => {
+                button.addEventListener('click', () => {
+                    const merchItem = button.closest('.merch-item');
+                    const flatImage = merchItem.querySelector('.flat-image');
+                    const spinImage = merchItem.querySelector('.spin-image');
+
+                    if (flatImage.style.display === 'none') {
+                        flatImage.style.display = 'block';
+                        spinImage.style.display = 'none';
+                        button.textContent = 'View Spin';
+                    } else {
+                        flatImage.style.display = 'none';
+                        spinImage.style.display = 'block';
+                        button.textContent = 'View Flat';
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>
