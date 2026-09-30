@@ -2,7 +2,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Existing head content -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>unibxby | Home</title>
@@ -167,7 +166,7 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            box-sizing: border-box; /* ✅ FIX: ensures padding doesn’t push center off-screen */
+            box-sizing: border-box;
             background-color: black;
             display: flex;
             justify-content: center;
@@ -205,40 +204,105 @@
         }
     </style>
 </head>
+
 <body>
 
     <h1>unibxby</h1>
 
     <div class="content-wrapper">
+
         <!-- Social Media Navbar -->
         <div class="social-media-nav">
             <a href="https://fansly.com/unixotic" target="_blank" aria-label="Fansly">
                 <img src="{% static 'socials/fansly.svg' %}" alt="Fansly">
             </a>
+
             <a href="https://instagram.com/unibxby" target="_blank" aria-label="Instagram">
                 <img src="{% static 'socials/instagram.svg' %}" alt="Instagram">
             </a>
+
             <a href="https://x.com/unibxby" target="_blank" aria-label="X">
                 <img src="{% static 'socials/x.svg' %}" alt="X" class="x-icon">
             </a>
         </div>
 
         <div class="slider-container">
+
             <div class="slider-frame" id="sliderFrame">
                 <div class="slider">
+
+                    <!-- NEW PHOTO 1 -->
                     <a href="https://fansly.com/unixotic" target="_blank">
-                        <img src="{% static 'images/Yaya2.jpg' %}" alt="Photo1" class="active" loading="lazy">
+                        <img
+                            src="{% static 'images/new-1.jpg' %}"
+                            alt="Yaya"
+                            class="active"
+                            loading="eager"
+                        >
                     </a>
+
+                    <!-- NEW PHOTO 2 -->
                     <a href="https://fansly.com/unixotic" target="_blank">
-                        <img src="{% static 'images/Yaya1.jpg' %}" alt="Photo2" loading="lazy">
+                        <img
+                            src="{% static 'images/new-2.jpg' %}"
+                            alt="Yaya"
+                            loading="lazy"
+                        >
                     </a>
+
+                    <!-- NEW PHOTO 3 -->
+                    <a href="https://fansly.com/unixotic" target="_blank">
+                        <img
+                            src="{% static 'images/new-3.png' %}"
+                            alt="Yaya"
+                            loading="lazy"
+                        >
+                    </a>
+
+                    <!-- NEW PHOTO 4 -->
+                    <a href="https://fansly.com/unixotic" target="_blank">
+                        <img
+                            src="{% static 'images/new-4.png' %}"
+                            alt="Yaya"
+                            loading="lazy"
+                        >
+                    </a>
+
+                    <!-- NEW PHOTO 5 -->
+                    <a href="https://fansly.com/unixotic" target="_blank">
+                        <img
+                            src="{% static 'images/new-5.jpg' %}"
+                            alt="Yaya"
+                            loading="lazy"
+                        >
+                    </a>
+
+                    <!-- ORIGINAL PHOTO 1 -->
+                    <a href="https://fansly.com/unixotic" target="_blank">
+                        <img
+                            src="{% static 'images/Yaya2.jpg' %}"
+                            alt="Yaya"
+                            loading="lazy"
+                        >
+                    </a>
+
+                    <!-- ORIGINAL PHOTO 2 -->
+                    <a href="https://fansly.com/unixotic" target="_blank">
+                        <img
+                            src="{% static 'images/Yaya1.jpg' %}"
+                            alt="Yaya"
+                            loading="lazy"
+                        >
+                    </a>
+
                 </div>
             </div>
 
             <div class="slider-nav">
-                <button id="prevBtn">&#10094;</button>
-                <button id="nextBtn">&#10095;</button>
+                <button id="prevBtn" aria-label="Previous photo">&#10094;</button>
+                <button id="nextBtn" aria-label="Next photo">&#10095;</button>
             </div>
+
         </div>
 
         <a href="https://fansly.com/unixotic" target="_blank" style="text-decoration: none;">
@@ -277,6 +341,7 @@
         function showImage(index) {
             images.forEach((img, i) => {
                 img.classList.remove('active');
+
                 if (i === index) {
                     img.classList.add('active');
                 }
@@ -288,11 +353,18 @@
             showImage(currentIndex);
         }
 
-        document.getElementById('nextBtn').addEventListener('click', () => changeSlide(1));
-        document.getElementById('prevBtn').addEventListener('click', () => changeSlide(-1));
+        document
+            .getElementById('nextBtn')
+            .addEventListener('click', () => changeSlide(1));
+
+        document
+            .getElementById('prevBtn')
+            .addEventListener('click', () => changeSlide(-1));
 
         showImage(currentIndex);
-        sliderFrame.style.animation = 'rotateSideToSide 3s ease-in-out infinite alternate';
+
+        sliderFrame.style.animation =
+            'rotateSideToSide 3s ease-in-out infinite alternate';
     </script>
 
 </body>
